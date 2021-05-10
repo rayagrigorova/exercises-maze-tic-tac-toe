@@ -76,8 +76,8 @@ public class TicTacToe extends JPanel {
 		squares = new Square[3][3];
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
-				int xLeft = (int) (a * i + this.getBounds().height * 0.1);
-				int yLeft = (int) (a * j + this.getBounds().width* 0.1);
+				int xLeft = (int) (a * j + this.getBounds().width * 0.1);
+				int yLeft = (int) (a * i + this.getBounds().height* 0.1);
 				
 				System.out.print("(" + xLeft + "," + yLeft + ")  ");
 				squares[i][j] = new Square(xLeft, yLeft);
@@ -89,10 +89,17 @@ public class TicTacToe extends JPanel {
 		this.addMouseListener(new MouseListener() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
+		    }
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
 		    	if(!gameEnded) {
 			        int x = e.getX();
 			        int y = e.getY();
+			        
 			        System.out.println("x = " + x + " y = " + y);
+			        
 			        for(int i = 0; i < 3; i++) {
 			        	for(int j = 0; j < 3; j++) {
 			        		if(inSquare(i, j, x, y)) {
@@ -116,12 +123,6 @@ public class TicTacToe extends JPanel {
 			        pointsLabel.setText("Points:\nPlayer 1:" + points[0] + "\nPlayer 2: " + points[1]);
 			        repaint();
 		    	}
-		    }
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
