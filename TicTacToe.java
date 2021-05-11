@@ -9,16 +9,17 @@ import java.util.Random;
 import javax.swing.*;
 
 public class TicTacToe extends JPanel {
-	//board е масив, който от начало е пълен само с нули. Нека 1 да ни е O, а 2 - X
+	//Board is an array, which is only filled with zeroes in the beginning. 
+	//Let O be 1 and X - 2
 	int[][] board; 
 	Square[][] squares; 
-	//Точките на играч 1 ще са на 0 индекс, а тези на играч 2 - на първи индекс 
+	//The points of player 1 will be on index 0 and the points of player 2 - on index 1
 	int[] points;
-	//Страната на квадратчето 
+	//Side of the square  
 	int a;
 	// player 1 ще е с О, а player 2 - с X
 	int currentPlayer; 
-	//Позицията на последното кликнато квадратче в масива 
+	//Position of the last clicked square in the array 
 	int iLast, jLast; 
 	boolean gameEnded = false;
 	
@@ -31,23 +32,22 @@ public class TicTacToe extends JPanel {
 		points = new int[2];
 		currentPlayerLabel = new JLabel("");
 		Random r = new Random(); 
-		//Определяме кой играч е първи
-		currentPlayer = r.nextInt() % 2 + 1;
+		//We determine which player will be the first to play 
+		currentPlayer = r.nextInt(100) % 2 + 1;
 		if(currentPlayer == 1) {
 			currentPlayerLabel.setText("Player 1's turn O");
 		}
-		//Този с X - овете 
 		else {
 			currentPlayerLabel.setText("Player 2's turn X");
 		}
 		pointsLabel = new JLabel("Points:\nPlayer 1:" + points[0] + "\nPlayer 2: " + points[1]);
 		restartButton = new JButton("Restart");
-		restartButton.setBackground(Color.red);
+		restartButton.setBackground(Color.RED);
 		restartButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//Нулираме дъската 
+				//Set all values on the board to 0
 				for(int i = 0; i < 3; i++) {
 					for(int j = 0; j < 3; j++) {
 						board[i][j] = 0;
@@ -56,8 +56,8 @@ public class TicTacToe extends JPanel {
 				}
 				currentPlayerLabel.setText("");
 				Random r = new Random(); 
-				//Определяме кой играч е първи
-				currentPlayer = r.nextInt() % 2 + 1;
+				// We determine which player will be the first to play 
+				currentPlayer = r.nextInt(100) % 2 + 1;
 				gameEnded = false;
 				repaint();
 			}
@@ -69,7 +69,6 @@ public class TicTacToe extends JPanel {
 		
 		this.setBounds(new Rectangle(200, 200, 400, 400));
 		
-		//Размер на страната, * 0.8, за да не се опира таблицата в панела 
 		a = (int)(this.getBounds().width * 0.8) / 3; 
 		iLast = -1;
 		jLast = -1;
@@ -79,37 +78,25 @@ public class TicTacToe extends JPanel {
 				int xLeft = (int) (a * j + this.getBounds().width * 0.1);
 				int yLeft = (int) (a * i + this.getBounds().height* 0.1);
 				
-				System.out.print("(" + xLeft + "," + yLeft + ")  ");
 				squares[i][j] = new Square(xLeft, yLeft);
 			}
 			System.out.println();
 		}
-		System.out.println("a = " + a);
-		
 		this.addMouseListener(new MouseListener() {
 		    @Override
-		    public void mouseClicked(MouseEvent e) {
-		    }
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
+		    public void mousePressed(MouseEvent e) {
 		    	if(!gameEnded) {
 			        int x = e.getX();
 			        int y = e.getY();
-			        
-			        System.out.println("x = " + x + " y = " + y);
-			        
 			        for(int i = 0; i < 3; i++) {
 			        	for(int j = 0; j < 3; j++) {
 			        		if(inSquare(i, j, x, y)) {
-			        			System.out.println("i: " + i  + " j: " + j);
 			        			iLast = i;
 			        			jLast = j;
 			        			board[i][j] = currentPlayer; 
 			        			squares[i][j].isFull = true;
-			        			currentPlayer = currentPlayer % 2 + 1;
 			        			if(gameEnded()) {gameEnded = true; break;} 
+			        			currentPlayer = (currentPlayer == 1)? 2 : 1;
 			        			if(currentPlayer == 1) {
 			        				currentPlayerLabel.setText("Player 1's turn O");
 			        			}
@@ -123,6 +110,12 @@ public class TicTacToe extends JPanel {
 			        pointsLabel.setText("Points:\nPlayer 1:" + points[0] + "\nPlayer 2: " + points[1]);
 			        repaint();
 		    	}
+		    }
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 
 			@Override
@@ -147,7 +140,7 @@ public class TicTacToe extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		print();
+//		print();
 		g.setColor(Color.black);
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++){
@@ -155,12 +148,12 @@ public class TicTacToe extends JPanel {
 				int yLeft = squares[i][j].y;
 				g.drawRect(xLeft, yLeft, a, a);
 				switch(board[i][j]) {
-				case 0: // рисува се само правоъгълник 
+				case 0: // Just draw a square 
 					break;
-				case 1: //Рисува се O
-					g.drawOval((int)(xLeft + 0.25 * a),(int)(yLeft + 0.25 * a), (int)((a / 2) * 0.7),(int) ((a / 2) * 0.7));
+				case 1: //Draw an O in the square 
+					g.drawOval(xLeft, yLeft, a , a );
 					break;
-				case 2: //Рисува се X
+				case 2: //Draw an X in the square 
 					g.drawLine(xLeft, yLeft, xLeft + a, yLeft + a);
 					g.drawLine(xLeft + a, yLeft, xLeft, yLeft + a);
 					break;	
@@ -178,35 +171,33 @@ public class TicTacToe extends JPanel {
 		return false;
 	}
 	public boolean gameEnded() {
-		//Проверяваме за победа на последния играл 
-		// player 1 ще е с О, а player 2 - с X
-
+		//We check if the last player to play has won 
 		if(checkHorizontally() || checkVertically() || checkDiagonally()) {
 			currentPlayerLabel.setText("Player " + currentPlayer + " won!");
 			points[currentPlayer - 1 ]++;
 			return true;
 		}
 		
-		//Ако никой не е победил, то търсим дали има равенство 
+		//If nobody has won, we check for a tie 
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
 				if(board[i][j] == 0) return false;
 			}
 		}
-		//Има равенство, ако всички полета са запълнени и няма победител 
+		//There is a tie if all fields are full and there is no winner 
 		currentPlayerLabel.setText("Tie!");
 		return true;
 		
 	}
 	public boolean checkHorizontally() {
-		//Трябва да промерим дали всички числа на реда са равни на currentPlayer 
+		//We must check if all numbers on the row are equal to currentPlayer 
 		for(int j = 0; j < 3; j++) {
 			if(board[iLast][j] != currentPlayer) return false;
 		}
 		return true;
 	}
 	public boolean checkVertically() {
-		//Трябва да проверим дали всички числа на колоната са равни на currentPlayer 
+		//We must check if all numbers on the column are equal to currentPlayer 
 		for(int i = 0; i < 3; i++) {
 			if(board[i][jLast] != currentPlayer) return false;
 		}
@@ -214,18 +205,18 @@ public class TicTacToe extends JPanel {
 	}
 	
 	public boolean checkDiagonally() {
-		//Диагоналите на масива са: [0][0] [1][1] [2][2] и [0][2] [1][1] [2][0]
-		//Последната стъпка не е била по някой от диагоналите, значи няма как да има победа по диагоналите 
+		//The diagonals of the array are: [0][0] [1][1] [2][2] и [0][2] [1][1] [2][0]
+		//If the last step wasn't on a diagonal, there can't be a diagonal win 
 		if(iLast != jLast && iLast + jLast != 2) {
 			return false;
 		}
 		
 		boolean first = true, second = true; 
-		//Първи диагонал [0][0] [1][1] [2][2]
+		//First diagonal [0][0] [1][1] [2][2]
 		for(int i = 0; i < 3; i++) {
 			if(board[i][i] != currentPlayer) {first = false; break;}
 		}
-		//Втори диагонал 
+		//Second diagonal  
 		for(int i = 0; i < 3; i++) {
 			if(board[i][2 - i] != currentPlayer) {second = false; break;}
 		}
@@ -234,15 +225,15 @@ public class TicTacToe extends JPanel {
 		return false;
 	}
 	
-	public void print() {
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < 3; j++) {
-				System.out.print(board[i][j] + " ");
-			}
-			System.out.println();
-		}
-	}
+//	public void print() {
+//		System.out.println();
+//		System.out.println();
+//		System.out.println();
+//		for(int i = 0; i < 3; i++) {
+//			for(int j = 0; j < 3; j++) {
+//				System.out.print(board[i][j] + " ");
+//			}
+//			System.out.println();
+//		}
+//	}
 }
